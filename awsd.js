@@ -1,3 +1,5 @@
+#! /usr/local/bin/node
+
 var AWS = require('aws-sdk');
 var colors = require('colors');
 var ec2 = new AWS.EC2({region: 'us-east-1'});
