@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/aeud/aws-describe",
   "dependencies": {
-    "aws-sdk": "x"
+    "aws-sdk": "x",
+    "commander": "x",
+    "colors": "x"
   }
 }
