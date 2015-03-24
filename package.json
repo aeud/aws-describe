@@ -1,0 +1,22 @@
+{
+  "name": "aws-describe",
+  "version": "0.0.0",
+  "description": "",
+  "main": "awsd.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/aeud/aws-describe.git"
+  },
+  "author": "adrien.eudes@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aeud/aws-describe/issues"
+  },
+  "homepage": "https://github.com/aeud/aws-describe",
+  "dependencies": {
+    "aws-sdk": "x"
+  }
+}
