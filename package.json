@@ -20,6 +20,7 @@
     "aws-sdk": "x",
     "commander": "x",
     "colors": "x",
-    "copy-paste": "x"
+    "copy-paste": "x",
+    "ssh-exec": "x"
   }
 }

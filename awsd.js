@@ -4,6 +4,7 @@ var AWS      = require('aws-sdk')
 var colors   = require('colors')
 var readline = require('readline')
 var cp       = require('copy-paste')
+var exec     = require('child_process').exec
 
 var ec2 = new AWS.EC2({region: 'us-east-1'})
 
@@ -27,8 +28,7 @@ function processInstance(instances) {
         instancesExec[_i] = 'ssh -i /Users/adrien/.ssh/ae.pem ubuntu@' + instance.PublicIpAddress
     })
     rl.question('Server to access?', answer => {
-        cp.copy(instancesExec[answer])
-        console.log(instancesExec[answer])
+        exec('osascript -e \'tell app "iTerm"\n tell the first terminal\n tell (launch session "Default session")\n write text "' + instancesExec[answer] + '"\n end tell\n end tell\n end tell\'')
         rl.close()
     })
 }
