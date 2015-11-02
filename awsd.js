@@ -1,17 +1,15 @@
 #! /usr/local/bin/node
 
+var fs       = require('fs')
+var readline = require('readline')
 var AWS      = require('aws-sdk')
 var colors   = require('colors')
-var readline = require('readline')
 var cp       = require('copy-paste')
-var exec     = require('child_process').exec
+var exec     = require('child_process').execSync
+
+var command = fs.readFileSync(__dirname + '/command', 'utf-8')
 
 var ec2 = new AWS.EC2({region: 'us-east-1'})
-
-var rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-})
 
 var instancesExec = []
 
@@ -27,10 +25,27 @@ function processInstance(instances) {
         ].join(' '))
         instancesExec[_i] = 'ssh -i /Users/adrien/.ssh/ae.pem ubuntu@' + instance.PublicIpAddress
     })
-    rl.question('Server to access?', answer => {
-        exec('osascript -e \'tell app "iTerm"\n tell the first terminal\n tell (launch session "Default session")\n write text "' + instancesExec[answer] + '"\n end tell\n end tell\n end tell\'')
-        rl.close()
-    })
+    if (process.argv[2]) {
+        var a = parseInt(process.argv[2])
+        if (a in instancesExec)
+            exec('osascript -e \'tell app "iTerm"\n tell the first terminal\n tell current session\n write text "' + instancesExec[process.argv[2]] + '"\n end tell\n end tell\n end tell\'')
+    } else {
+        var rl = readline.createInterface({
+            input: process.stdin,
+            output: process.stdout
+        })
+        var ask = () => {
+            rl.question('Server to access?', answer => {
+                answer.split(',').forEach(a => {
+                    var a = parseInt(a)
+                    if (a in instancesExec)
+                        exec('osascript -e \'tell app "iTerm"\n tell the first terminal\n tell (launch session "Default session")\n write text "' + instancesExec[a] + '"\n end tell\n end tell\n end tell\'')
+                })
+                ask()
+            })
+        }
+        ask()
+    }
 }
 
 ec2.describeInstances({}, (err, data) => {
