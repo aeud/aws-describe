@@ -13,6 +13,8 @@ var ec2 = new AWS.EC2({region: 'us-east-1'})
 
 var instancesExec = []
 
+var responsePath = __dirname + '/response.json'
+
 function processInstance(instances) {
     instances.forEach((instance, _i) => {
         console.log([
@@ -35,7 +37,7 @@ function processInstance(instances) {
             output: process.stdout
         })
         var ask = () => {
-            rl.question('Server to access?', answer => {
+            rl.question('Server to access?\t', answer => {
                 answer.split(',').forEach(a => {
                     var a = parseInt(a)
                     if (a in instancesExec)
@@ -48,7 +50,16 @@ function processInstance(instances) {
     }
 }
 
-ec2.describeInstances({}, (err, data) => {
-    var instances = data.Reservations.map(reservation => reservation.Instances).reduce((a, b) => a.concat(b), [])
-    processInstance(instances)
-})
+var run = () => {
+    var response = fs.existsSync(responsePath) ? JSON.parse(fs.readFileSync(responsePath, 'utf-8')) : null
+    if (!response || new Date(response.updated_at).getTime() < new Date().getTime() - 24*60*60*1000) {
+        console.log('Loading instances ...')
+        ec2.describeInstances({}, (err, data) => {
+            var instances = data.Reservations.map(reservation => reservation.Instances).reduce((a, b) => a.concat(b), [])
+            response = { updated_at: new Date().toISOString(), instances: instances }
+            fs.writeFileSync(responsePath, JSON.stringify(response))
+            processInstance(response.instances)
+        })
+    } else processInstance(response.instances)
+}
+run()
