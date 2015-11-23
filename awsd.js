@@ -27,7 +27,7 @@ function processInstance(instances) {
         ].join(' '))
         instancesExec[_i] = 'ssh -i /Users/adrien/.ssh/ae.pem ubuntu@' + instance.PublicIpAddress
     })
-    if (process.argv[2]) {
+    if (process.argv[2] && process.argv[2] != -1) {
         var a = parseInt(process.argv[2])
         if (a in instancesExec)
             exec('osascript -e \'tell app "iTerm"\n tell the first terminal\n tell current session\n write text "' + instancesExec[process.argv[2]] + '"\n end tell\n end tell\n end tell\'')
@@ -52,7 +52,7 @@ function processInstance(instances) {
 
 var run = () => {
     var response = fs.existsSync(responsePath) ? JSON.parse(fs.readFileSync(responsePath, 'utf-8')) : null
-    if (!response || new Date(response.updated_at).getTime() < new Date().getTime() - 24*60*60*1000) {
+    if (!response || new Date(response.updated_at).getTime() < new Date().getTime() - 24*60*60*1000 || process.argv[2] == -1) {
         console.log('Loading instances ...')
         ec2.describeInstances({}, (err, data) => {
             var instances = data.Reservations.map(reservation => reservation.Instances).reduce((a, b) => a.concat(b), [])
