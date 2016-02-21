@@ -30,7 +30,7 @@ function processInstance(instances) {
     if (process.argv[2] && process.argv[2] != -1) {
         var a = parseInt(process.argv[2])
         if (a in instancesExec)
-            exec('osascript -e \'tell app "iTerm"\n tell the first terminal\n tell current session\n write text "' + instancesExec[process.argv[2]] + '"\n end tell\n end tell\n end tell\'')
+            exec('osascript -e \'tell app "iTerm"\ntell current window\ntell current tab\ntell current session\nwrite text "' + instancesExec[process.argv[2]] + '"\nend tell\nend tell\nend tell\nend tell\'')
     } else {
         var rl = readline.createInterface({
             input: process.stdin,
@@ -41,9 +41,10 @@ function processInstance(instances) {
                 answer.split(',').forEach(a => {
                     var a = parseInt(a)
                     if (a in instancesExec)
-                        exec('osascript -e \'tell app "iTerm"\n tell the first terminal\n tell (launch session "Default session")\n write text "' + instancesExec[a] + '"\n end tell\n end tell\n end tell\'')
+                        exec('osascript -e \'tell app "iTerm"\ntell current window\ntell current tab\ntell current session\nwrite text "' + instancesExec[a] + '"\nend tell\nend tell\nend tell\nend tell\'')
                 })
-                ask()
+                rl.close()
+                //ask()
             })
         }
         ask()
