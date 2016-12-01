@@ -16,10 +16,13 @@ var instancesExec = []
 var responsePath = __dirname + '/response.json'
 
 function processInstance(instances) {
-    instances.forEach((instance, _i) => {
+    instances.map(instance => {
+        instance.name = instance.Tags.map(tag => tag.Key == 'Name' ? tag.Value : null).filter(name => name != null ).join()
+        return instance
+    }).sort((a, b) => a.name.toLowerCase() > b.name.toLowerCase() ? 1 : -1).forEach((instance, _i) => {
         console.log([
             _i,
-            colors.underline(instance.Tags.map(tag => tag.Key == 'Name' ? tag.Value : null).filter(name => name != null ).join()),
+            colors.underline(instance.name),
             colors.red(instance.InstanceId),
             instance.State.Name,
             (instance.PublicIpAddress ? colors.yellow(instance.PublicIpAddress) : null),
