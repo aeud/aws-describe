@@ -28,7 +28,7 @@ function processInstance(instances) {
             (instance.PublicIpAddress ? colors.yellow(instance.PublicIpAddress) : null),
             instance.KeyName,
         ].join(' '))
-        instancesExec[_i] = 'ssh -i /Users/adrien/.ssh/ae.pem ubuntu@' + instance.PublicIpAddress
+        instancesExec[_i] = command + instance.PublicIpAddress
     })
     if (process.argv[2] && process.argv[2] != -1) {
         var a = parseInt(process.argv[2])
